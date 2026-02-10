@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>WINARS.com</title>
+    <link rel="icon" type="image/png" href="/favicon.png">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&display=swap" rel="stylesheet" />
+
+    <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/@fingerprintjs/fingerprintjs@3/dist/fp.min.js"></script>
+
+
+
+    <link rel="stylesheet" href="./styles/styles.css" />
+    <link rel="stylesheet" href="./styles/mp.css" />
+
+
+    <script>
+        const PIXEL_ID = "";
+        !(function (f, b, e, v, n, t, s) {
+            if (f.fbq) return;
+            n = f.fbq = function () {
+                n.callMethod
+                    ? n.callMethod.apply(n, arguments)
+                    : n.queue.push(arguments);
+            };
+            if (!f._fbq) f._fbq = n;
+            n.push = n;
+            n.loaded = !0;
+            n.version = "2.0";
+            n.queue = [];
+            t = b.createElement(e);
+            t.async = !0;
+            t.src = v;
+            s = b.getElementsByTagName(e)[0];
+            s.parentNode.insertBefore(t, s);
+        })(
+            window,
+            document,
+            "script",
+            "https://connect.facebook.net/en_US/fbevents.js"
+        );
+        fbq("init", PIXEL_ID);
+        fbq("track", "ViewContent");
+
+    </script>
+
+</head>
+
+<body class="lbody">
+
+    <div id="loading-overlay" class="hidden">
+        <img src="./assets/svg/Spin@1x-1.0s-200px-200px.svg" alt="Cargando...">
+    </div>
+
+
+
+
+    <div class="mp-notif-wrapper" aria-live="polite">
+        <div class="mp-notif" role="status" aria-label="Notificación de transferencia">
+            <div class="mp-avatar">
+                <!--?Restore-->
+                <!-- <img src="../.../assets/images/send-icon.png" alt="Icono envío" /> -->
+                <!--todos: dev-->
+                <img src="./assets/images/landing/mp/send-icon.png" alt="Icono envío" />
+            </div>
+
+            <div class="mp-main">
+                <div class="mp-title">Premio Pagado✅</div>
+                <div class="mp-sub">Transferencia enviada a <span class="recipient-name"></span>
+                </div>
+                <div class="mp-row">
+                    <!--?Restore-->
+                    <!-- <div class="mp-badge"><img src="../.../assets/images/mp-badge.png" alt="Mercado Pago" /></div> -->
+                    <!--todos: dev-->
+                    <div class="mp-badge"><img src="./assets/images/landing/mp/mp-badge.png" alt="Mercado Pago" />
+                    </div>
+                    <div class="mp-meta">Dinero disponible</div>
+                </div>
+            </div>
+
+            <div class="mp-right">
+                <div class="mp-amount"><span class="minus">-</span> $ <span class="amount-value"></span></div>
+                <div class="mp-time"><span class="time-value"></span> hs</div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+
+    <div class="screen">
+        <div class="card">
+            <!-- <h1 class="title">TRIPLICAMOS TU CARGA</h1> -->
+            <div class="logo">
+                <img src="./assets/images/landing/logo/logo.png" alt="WINARS" class="icon" />
+            </div>
+
+            <p class="subtitle">
+                <img src="./assets/images/landing/gem-stone_1f48e.png" alt="🔥" class="fire" />
+                WINARS
+                <img src="./assets/images/landing/gem-stone_1f48e.png" alt="🔥" class="fire" />
+            </p>
+            <p class="highlight">PAGANDO PREMIOS LAS 24HS
+            </p>
+
+
+            <!-- HTML -->
+            <button class="cta-button openWpp" id="Btn" aria-label="Ir a WhatsApp ahora">
+                <span class="cta-text">RECLAMAR BONO</span>
+            </button>
+            <div class="examples-container">
+                <span id="example-text" class="examples-text"></span>
+            </div>
+        </div>
+
+
+
+        <section class="carousel-section">
+            <h2>JUEGOS MAS JUGADOS</h2>
+            <div class="carousel">
+                <ul class="carousel-track" id="track"></ul>
+            </div>
+        </section>
+
+
+
+        <footer class="watermark">
+            <p>
+                © 2025 ArgyStudios. Todos los derechos reservados.
+            </p>
+        </footer>
+
+
+
+
+
+
+
+        <script>
+            window.addEventListener('load', () => {
+                const track = document.getElementById('track');
+                const imagePaths = [];
+                const folderRoute = "./assets/images/landing/carrousel";
+                const totalImages = 15;
+
+                for (let i = 1; i <= totalImages; i++) {
+                    const path = `${folderRoute}/slide ${i}.webp`;
+                    imagePaths.push(path);
+                }
+
+                imagePaths.forEach(src => {
+                    const li = document.createElement('li');
+                    li.className = 'carousel-item';
+                    const img = document.createElement('img');
+                    img.src = src;
+                    img.loading = 'lazy';
+                    li.appendChild(img);
+                    track.appendChild(li);
+                });
+
+                console.log('Elementos generados en el track:', track.children.length);
+            });
+        </script>
+
+        <script>
+            window.addEventListener('DOMContentLoaded', () => {
+                const track = document.getElementById('track');
+                const carousel = document.querySelector('.carousel');
+                const slides = Array.from(track.children);
+
+                if (slides.length === 0) {
+                    console.error('No hay elementos en el track.');
+                    return; // Detenemos la ejecución si no hay slides
+                }
+
+                const slideWidth = slides[0].getBoundingClientRect().width;
+                const trackGap = parseFloat(getComputedStyle(track).gap);
+
+                const visibleCount = Math.ceil(
+                    carousel.clientWidth / (slideWidth + trackGap)
+                ) + 1;
+
+                for (let i = 0; i < visibleCount; i++) {
+                    const clone = slides[i % slides.length].cloneNode(true);
+                    track.appendChild(clone);
+                }
+
+                const originalWidth = slides.length * (slideWidth + trackGap);
+                track.style.setProperty('--scroll-end', `-${originalWidth}px`);
+                track.style.setProperty('--duration', `${slides.length * 2}s`);
+                track.style.animation = `scrollCarousel var(--duration) linear infinite`;
+            });
+        </script>
+        <script src="./js/mp.js" defer></script>
+        <script src="./js/basic-main.js" defer></script>
+
+</body>
+
+</html>

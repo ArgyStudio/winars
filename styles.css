@@ -1,0 +1,779 @@
+/* File: styles.css */
+
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&display=swap');
+
+/*------------------------------------
+1. Variables
+------------------------------------*/
+:root {
+
+    /* === PROMOCION === */
+    --promocion-font-size: 1.1rem;
+    --promocion-font-weight: 600;
+    --promocion-color: #ffffff;
+    /* verde brillante */
+    --promocion-margin-bottom: 0.5rem;
+    --promocion-shadow-mid: #22c55e;
+    /* verde esmeralda */
+    --promocion-text-shadow:
+        0 0 4px var(--promocion-color),
+        0 0 8px #22c55e,
+        0 0 12px #10b981,
+        0 0 16px #059669;
+
+
+
+    /*CARD COLORS*/
+    --color-escribitunombre: rgba(34, 197, 94, 0.4);
+    /* verde brillante al 40% de opacidad */
+
+    --gradient-start: rgba(22, 163, 74, 0.7);
+    /* verde vívido */
+    --gradient-end: rgba(21, 128, 61, 0.6);
+    /* verde medio */
+
+
+    /* Fondo con verde más visible */
+    --bg-base: #052e16;
+    /* verde oscuro pero visible */
+
+    /* Degradé interno más vívido */
+    --bg-dark: #064e3b;
+    /* verde oscuro vívido */
+    --bg-light: #059669;
+    /* verde esmeralda */
+    --accent-mid: #22c55e;
+    /* verde brillante */
+    --accent-light: #4ade80;
+    /* verde neón */
+
+    /* Textos blancos suaves */
+    --white: #ffffff;
+    /* blanco puro */
+
+    /* Fondo para inputs */
+    --input-bg: rgba(74, 222, 128, 0.25);
+    /* verde brillante al 25% de opacidad */
+
+    --gutter: 1rem;
+    --radius: 1rem;
+
+    --ease: cubic-bezier(0.4, 0, 0.2, 1);
+    --fast: 0.2s;
+    --medium: 0.5s;
+
+    --screen-aspect: 360/780;
+
+    /*lo nuevo de escribi tu nombre*/
+    --gutter: 1rem;
+    --primary-color: #22c55e;
+    --accent-color: #4ade80;
+    --glow-color: rgba(74, 222, 128, 0.9);
+
+}
+
+
+
+:root {
+    /* Colores */
+    --wpp-green: #22c55e;
+    /* verde brillante */
+    --wpp-green-2: #16a34a;
+    /* verde vívido */
+    --wpp-dark: #059669;
+    /* verde esmeralda */
+    --white: #ffffff;
+
+    /* Tipografía y formas */
+    --font-sans: "Inter", "Helvetica Neue", Arial, sans-serif;
+    --radius: 28px;
+    --gap: 12px;
+
+    /* Tiempo / easing (UNIFICADOS) */
+    --pulse-duration: 2200ms;
+    /* duración base del ciclo */
+    --pulse-ease: cubic-bezier(.16, .84, .24, 1);
+    /* easing natural y suave */
+
+    /* Pulso / escala / traslación (globales) */
+    --pulse-scale-peak: 1.10;
+    /* pico global del pulso */
+    --pulse-scale-min: 0.992;
+    /* undershoot leve */
+    --pulse-translate-peak: -3px;
+    /* traslación vertical máxima */
+
+    /* Icon (controles específicos) */
+    --icon-translate-x: 4px;
+    --icon-translate-y: -1.2px;
+    /* ligera elevación para sensación 3D */
+    --icon-rotate-peak: -8deg;
+    --icon-skew-max: 1.6deg;
+    --icon-scale-peak: 1.06;
+    --icon-scale-min: 0.995;
+    --icon-shadow-peak: 0 6px 18px rgba(0, 0, 0, 0.18);
+    --icon-shadow-base: 0 2px 6px rgba(0, 0, 0, 0.10);
+
+    /* Sombras del botón */
+    --shadow-base: 0 8px 26px rgba(34, 197, 94, 0.5), 0 0 30px rgba(34, 197, 94, 0.3);
+    --shadow-peak: 0 20px 44px rgba(22, 163, 74, 0.7), 0 0 50px rgba(34, 197, 94, 0.5);
+
+    /* Otros */
+    --transition-fast: 160ms;
+}
+
+/*------------------------------------
+2. Impedir scroll de la página
+------------------------------------*/
+html,
+body {
+    height: 100%;
+    margin: 0;
+    background: var(--bg-base);
+}
+
+
+/*------------------------------------
+3. Base & Reset
+------------------------------------*/
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Montserrat', sans-serif;
+    background: #000000;
+    /* para centrar la pantalla fija */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Ocultar contenido fallback */
+.content {
+    display: none !important;
+}
+
+/*------------------------------------
+4. Pantalla fija full-viewport
+------------------------------------*/
+.screen {
+    /* position: fixed; */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    /* degradé verde vívido */
+    background: linear-gradient(135deg,
+            #052e16,
+            #064e3b,
+            #047f58);
+
+    padding: var(--gutter);
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.8);
+    /* max-width: 550px; */
+
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    overflow: hidden;
+    justify-content: center;
+
+    /* blur */
+    backdrop-filter: blur(10px);
+}
+
+/*------------------------------------
+5. Card & Textos
+------------------------------------*/
+.card {
+    width: 100%;
+    background: linear-gradient(135deg, rgba(5, 150, 105, 0.6),
+            rgba(16, 185, 129, 0.5),
+            rgba(34, 197, 94, 0.4));
+
+    backdrop-filter: blur(111px);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.45rem;
+    padding-top: 100px;
+
+
+
+}
+
+
+
+.title {
+    font-size: clamp(3vw, 24px, 1.7rem);
+    border: 2px solid var(--accent-light);
+    padding: 0;
+    font-weight: 800;
+    color: var(--accent-light);
+    text-shadow:
+        2px 2px 4px rgba(0, 0, 0, 0.9),
+        0 0 9px var(--accent-mid);
+    text-align: center;
+    margin-bottom: rem;
+    line-height: 1;
+
+}
+
+.subtitle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+
+    font-size: clamp(1rem, 2vw, 1.4rem);
+    /* escala fluida */
+    font-weight: 700;
+    color: #fff;
+
+    /* Sombra de texto más realista */
+    text-shadow:
+        0 2px 4px rgba(0, 0, 0, 0.6),
+        0 4px 12px rgba(0, 0, 0, 0.4);
+
+    line-height: 1.4;
+    text-align: center;
+
+    /* Animación sutil al aparecer */
+    opacity: 0;
+    transform: translateY(10px);
+    animation: fadeUp 0.6s ease-out forwards;
+
+    /* Espaciado interno opcional para aire */
+    padding: 0.2rem 0.6rem;
+}
+
+/* Animación de entrada */
+@keyframes fadeUp {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
+.subtitle .fire {
+    display: inline-block;
+    transform-origin: center bottom;
+    width: 26px;
+    /* ancho en px */
+    height: 26px;
+    /* alto en px */
+}
+
+
+.highlight {
+    font-size: 12px;
+    font-weight: var(--promocion-font-weight);
+    color: var(--promocion-color);
+    margin-bottom: var(--promocion-margin-bottom);
+
+    /* resplandor intenso */
+    text-shadow: var(--promocion-text-shadow);
+}
+
+
+
+
+
+/* Reset básico y fuente por defecto */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Estilo del body y contenedor principal */
+body {
+    color: #000000;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+main {
+    max-width: 400px;
+    margin: 50px auto;
+    padding: 20px;
+    text-align: center;
+}
+
+
+
+
+
+
+.cta-button,
+button.cta-button {
+    --pad-vertical: 12px;
+    --pad-horizontal: 36px;
+
+    display: inline-flex;
+    align-items: center;
+    gap: var(--gap);
+    padding: var(--pad-vertical) var(--pad-horizontal);
+    font-family: var(--font-sans);
+    font-weight: 800;
+    font-size: 16.5px;
+    letter-spacing: 0.02em;
+    color: var(--white);
+    background: linear-gradient(135deg, var(--wpp-green), var(--wpp-green-2));
+    border: solid 2px rgba(255, 255, 255, 0.386);
+    border-radius: var(--radius);
+    cursor: pointer;
+    user-select: none;
+    -webkit-appearance: none;
+    appearance: none;
+    position: relative;
+    overflow: hidden;
+    /* necesario para sheen / ripple */
+    text-decoration: none;
+    box-shadow:
+        var(--shadow-base),
+        inset 0 -2px 6px rgba(255, 0, 0, 0.12);
+    transform-origin: center center;
+    transition:
+        transform var(--transition-fast) var(--pulse-ease),
+        box-shadow var(--transition-fast),
+        filter var(--transition-fast),
+        opacity var(--transition-fast);
+    will-change: transform, box-shadow, filter;
+    -webkit-tap-highlight-color: transparent;
+
+    /* animación principal (pulso + sombra) -> única fuente temporal */
+    animation:
+        cta-pulse var(--pulse-duration) var(--pulse-ease) infinite both;
+}
+
+
+
+/* Texto e icono - sincronizados mediante la misma duración */
+.cta-text {
+    display: inline-block;
+    transform: translateZ(0);
+    text-shadow:
+        0 2px 4px rgba(0, 0, 0, 0.8),
+        /* sombra base */
+        0 0 15px rgba(74, 222, 128, 0.9),
+        /* glow verde brillante */
+        0 0 30px rgba(34, 197, 94, 0.6);
+    /* glow externo */
+
+    backface-visibility: hidden;
+    /* ligero desfase negativo para mantener coherencia con el pulso */
+    will-change: transform, opacity;
+}
+
+
+
+
+
+
+/* ------------------------
+   KEYFRAMES — matriz temporal unificada
+   ------------------------ */
+
+/* Pulso principal (botón + sombra) */
+@keyframes cta-pulse {
+    0% {
+        transform: scale(1) translateY(0);
+        box-shadow: var(--shadow-base);
+    }
+
+    28% {
+        transform: scale(calc(var(--pulse-scale-peak) - 0.02)) translateY(calc(var(--pulse-translate-peak) * 0.6));
+        box-shadow: var(--shadow-peak);
+    }
+
+    50% {
+        transform: scale(var(--pulse-scale-min)) translateY(0);
+        box-shadow: var(--shadow-base);
+    }
+
+    72% {
+        transform: scale(var(--pulse-scale-peak)) translateY(var(--pulse-translate-peak));
+        box-shadow: var(--shadow-peak);
+    }
+
+    100% {
+        transform: scale(1) translateY(0);
+        box-shadow: var(--shadow-base);
+    }
+}
+
+
+
+/* ------------------------
+   Hover: amplificar coherente del pulso
+   ------------------------ */
+.cta-button:hover {
+
+    animation: none
+}
+
+
+
+
+
+
+
+
+.subtitle {
+
+    text-decoration: underline;
+    text-decoration-color: rgb(74, 222, 128);
+    /* subrayado en verde neón */
+    text-decoration-thickness: 3px;
+    /* grosor del subrayado */
+    text-underline-offset: 2px;
+    /* espacio entre texto y subrayado */
+}
+
+
+
+/*/////////////////////////////////////*/
+/* animación del skeleton (nombre distinto para evitar colisión) */
+.skeleton {
+    animation: pulse-fade 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse-fade {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.4;
+    }
+}
+
+/*------------------------------------
+7. Carousel: grab, pausa & auto-scroll
+------------------------------------*/
+.carousel-section {
+    width: 90%;
+    margin-top: var(--gutter);
+    text-align: center;
+
+    max-width: 768px;
+
+}
+
+.carousel-section h2 {
+    font-size: clamp(10px, 1.1vw, 1.3vw);
+    font-weight: 600;
+    color: var(--accent-light);
+    opacity: 0.9;
+    margin-bottom: 0.5rem;
+
+}
+
+.carousel {
+    overflow: hidden;
+
+}
+
+.carousel-track {
+    display: flex;
+    gap: 0.5rem;
+    transition: transform var(--fast) var(--ease);
+    cursor: grab;
+    touch-action: pan-x;
+    user-select: none;
+    animation: scrollCarousel 20s linear infinite;
+}
+
+.carousel-track:active {
+    cursor: grabbing;
+    animation-play-state: paused;
+}
+
+@keyframes scrollCarousel {
+    0% {
+        transform: translateX(0);
+    }
+
+    100% {
+        transform: translateX(-50%);
+    }
+}
+
+.carousel-item {
+    flex: 0 0 calc((100% - (4 * 0.5rem)) / 5);
+    position: relative;
+}
+
+
+
+.carousel-item img {
+    width: 100%;
+    border-radius: 3px;
+    object-fit: cover;
+    pointer-events: none;
+    box-shadow:
+        0 4px 12px rgba(0, 0, 0, 0.6),
+        0 8px 24px rgba(34, 197, 94, 0.5),
+        0 0 20px rgba(74, 222, 128, 0.3);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.carousel-item {
+    flex: 0 0 calc((100% - (4 * 0.5rem)) / 5);
+    aspect-ratio: 1 / 1;
+    /* cajas cuadradas */
+    overflow: hidden;
+    /* recorta lo que sobre */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+}
+
+
+
+
+
+
+
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    /* antes: space-between */
+    gap: 0.25em;
+    /* separa icono y nombre */
+}
+
+.header .time {
+    margin-left: auto;
+    /* empuja sólo el tiempo al extremo derecho */
+}
+
+
+.carousel {
+    padding: 0.3rem;
+    /* espacio para que la sombra respire */
+    background: rgba(34, 197, 94, 0.25);
+    border-radius: var(--radius);
+    box-shadow: 0 8px 24px rgba(34, 197, 94, 0.8), 0 0 40px rgba(34, 197, 94, 0.4);
+}
+
+.carousel-item img {
+    position: relative;
+    z-index: 1;
+    box-shadow:
+        0 4px 12px rgba(0, 0, 0, 0.6),
+        0 8px 24px rgba(34, 197, 94, 0.5),
+        0 0 20px rgba(74, 222, 128, 0.3);
+}
+
+.skeleton {
+    z-index: 0;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.carousel-item {
+    flex: 0 0 calc((100% - (4 * 0.5rem)) / 5);
+    aspect-ratio: 1 / 1.8;
+    /* cajas cuadradas */
+    overflow: hidden;
+    /* recorta lo que sobre */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.watermark {
+    position: fixed;
+    bottom: 1px;
+    text-align: center;
+    z-index: 1000;
+    color: rgb(255, 255, 255);
+    width: 100%;
+    font-size: clamp(7px, 1.1dvh, 1.1vw);
+    opacity: 0.3;
+}
+
+
+.logo .icon {
+    width: 0.6rem;
+    height: 0.6rem;
+    object-fit: cover;
+    filter: drop-shadow(0 0 8px rgb(34, 197, 94)) drop-shadow(0 0 15px rgb(74, 222, 128));
+
+    border-radius: 50%;
+    /* border: solid 2px rgba(255, 234, 0, 0.655); */
+}
+
+
+
+.fire {
+    filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.8));
+}
+
+
+
+
+
+
+
+
+
+#loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgb(0, 0, 0);
+    /* Fondo negro más opaco */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 999999;
+    /* Z-index súper alto para estar por encima de TODO */
+}
+
+#loading-overlay.hidden {
+    display: none !important;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+body.lbody {
+    overflow: hidden;
+    opacity: 0;
+}
+
+body {
+    overflow: hidden;
+    opacity: 1;
+    transition: opacity 0.5s ease-in-out;
+    background-color: var(--bg-base);
+}
+
+/* === BOTONES MOSTRAR MÁS === */
+.btn-mostrar-mas {
+    background-color: #facc15;
+    color: #000;
+    border-radius: 9999px;
+    padding: 10px 24px;
+    font-weight: 700;
+    font-size: 14px;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+    margin-top: 15px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.btn-mostrar-mas:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 12px rgba(250, 204, 21, 0.5);
+    background-color: var(--wpp-green, #ffc400);
+}
