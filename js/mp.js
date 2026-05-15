@@ -1,4 +1,6 @@
-
+// Social-proof "Premio Pagado" notification widget.
+// Cycles a fake transferencia (name + amount + time) in sync with the CSS
+// animation iteration on `.mp-notif`.
 
 const FIRST_NAMES = [
     "Valerián", "Mateo", "Sofía", "Martina", "Lucas", "Julieta", "Diego", "Lucía",
@@ -14,75 +16,53 @@ const LAST_NAMES = [
 
 const mp = document.querySelector(".mp-notif");
 
-
 function randomInt(min, max) {
-    return Math.floor(Math.random() * (max - min) + min)
+    return Math.floor(Math.random() * (max - min) + min);
 }
 
-function randomArr(Array) {
-    return Array[Math.floor(Math.random() * Array.length)]
+function randomArr(arr) {
+    return arr[Math.floor(Math.random() * arr.length)];
 }
-
-
 
 function gName() {
-    const firstName = randomArr(FIRST_NAMES)
-    const lastName1 = randomArr(LAST_NAMES)
+    const firstName = randomArr(FIRST_NAMES);
+    const lastName1 = randomArr(LAST_NAMES);
 
-
-    const prob = Math.random() < 0.6
+    const prob = Math.random() < 0.6;
 
     if (prob) {
-        let lastName2 = randomArr(LAST_NAMES)
-
+        let lastName2 = randomArr(LAST_NAMES);
         while (lastName2 === lastName1) {
-            lastName2 = randomArr(LAST_NAMES)
+            lastName2 = randomArr(LAST_NAMES);
         }
-        return `${firstName} ${lastName1} ${lastName2}`
-
-    } else {
-        return `${firstName} ${lastName1}`
+        return `${firstName} ${lastName1} ${lastName2}`;
     }
-
+    return `${firstName} ${lastName1}`;
 }
 
 function gAmount() {
-    let wholeNumb = null
-    let decimNumb = null
+    const r = Math.random() < 0.7;
+    const wholeNumb = r ? randomInt(17000, 100000) : randomInt(100000, 338000);
 
-    const r = Math.random() < 0.7
+    const d = Math.random() < 0.4;
+    const decimNumb = d ? randomInt(0, 98) : 0;
 
-    if (r) {
-        wholeNumb = randomInt(17000, 100000)
-    } else {
-        wholeNumb = randomInt(100000, 338000)
-    }
-
-    const d = Math.random() < 0.4
-    if (d) {
-        decimNumb = randomInt(0, 98)
-    } else {
-        decimNumb = 0
-    }
-    const amount = wholeNumb + decimNumb / 100
+    const amount = wholeNumb + decimNumb / 100;
     return new Intl.NumberFormat("es-AR", {
         minimumFractionDigits: 2,
-        maximumFractionDigits: 2
+        maximumFractionDigits: 2,
     }).format(amount);
-
-
 }
 
 function gHour() {
     try {
         const now = new Date();
-        const parts = now.toLocaleTimeString("es-AR", {
+        return now.toLocaleTimeString("es-AR", {
             hour: "2-digit",
             minute: "2-digit",
             hour12: false,
-            timeZone: "America/Argentina/Buenos_Aires"
+            timeZone: "America/Argentina/Buenos_Aires",
         });
-        return parts;
     } catch (e) {
         const now = new Date();
         const hh = String(now.getHours()).padStart(2, "0");
@@ -91,53 +71,40 @@ function gHour() {
     }
 }
 
-
-//
-
 function updateV() {
-    const a = document.querySelector(".amount-value")
+    const a = document.querySelector(".amount-value");
     const n = document.querySelector(".recipient-name");
     const t = document.querySelector(".time-value");
-    if (!a && !n && !p) {
-        return
-    }
 
-    const r_a = gAmount()
-    const r_n = gName()
-    const r_t = gHour()
+    // Need at least one slot to update; bail early otherwise.
+    if (!a && !n && !t) return;
 
-
-    if (a) { a.textContent = r_a }
-    if (n) { n.textContent = r_n }
-    if (t) { t.textContent = r_t }
-
+    if (a) a.textContent = gAmount();
+    if (n) n.textContent = gName();
+    if (t) t.textContent = gHour();
 }
-
 
 function mpN() {
+    updateV();
 
-
-
-    updateV()
     if (!mp) {
-        setInterval(updateV(), 6400)
-        return
+        // No widget in DOM — fall back to a polling refresh so any late-mounted
+        // copy still gets values. Pass the function reference, NOT its return.
+        setInterval(updateV, 6400);
+        return;
     }
 
-    mp.addEventListener("Animation", () => {
-        updateV()
-    })
+    // Sync with the CSS animation: every iteration the notif "refreshes".
+    mp.addEventListener("animationiteration", () => {
+        requestAnimationFrame(updateV);
+    });
 }
-mp.addEventListener("animationiteration", () => {
-    requestAnimationFrame(updateV())
-})
 
-window.addEventListener("focus", updateV())
+// Refresh values when the tab regains focus so a returning user sees fresh data.
+window.addEventListener("focus", updateV);
 
 if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", mpN())
+    document.addEventListener("DOMContentLoaded", mpN);
+} else {
+    mpN();
 }
-else {
-    mpN()
-}
-
