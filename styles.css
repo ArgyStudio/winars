@@ -15,11 +15,10 @@
     --promocion-margin-bottom: 0.5rem;
     --promocion-shadow-mid: #22c55e;
     /* verde esmeralda */
+    /* Reducido de 4 capas a 2 — el highlight no compite con el CTA */
     --promocion-text-shadow:
-        0 0 4px var(--promocion-color),
-        0 0 8px #22c55e,
-        0 0 12px #10b981,
-        0 0 16px #059669;
+        0 1px 3px rgba(0, 0, 0, 0.7),
+        0 0 8px rgba(34, 197, 94, 0.4);
 
 
 
@@ -168,11 +167,11 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    /* degradé verde vívido */
+    /* degradé verde profundo — termina oscuro, no fluo, para dar descanso visual */
     background: linear-gradient(135deg,
+            #021410,
             #052e16,
-            #064e3b,
-            #047f58);
+            #0a3d2e);
 
     padding: var(--gutter);
     overflow-y: auto;
@@ -188,9 +187,6 @@ body {
 
     overflow: hidden;
     justify-content: center;
-
-    /* blur */
-    backdrop-filter: blur(10px);
 }
 
 /*------------------------------------
@@ -198,11 +194,13 @@ body {
 ------------------------------------*/
 .card {
     width: 100%;
-    background: linear-gradient(135deg, rgba(5, 150, 105, 0.6),
-            rgba(16, 185, 129, 0.5),
-            rgba(34, 197, 94, 0.4));
+    /* Opacidades bajadas (60/50/40 → 30/22/15). El blur generaba "neblina verde";
+       ahora deja respirar el fondo y el CTA destaca por contraste. */
+    background: linear-gradient(135deg, rgba(5, 150, 105, 0.30),
+            rgba(16, 185, 129, 0.22),
+            rgba(34, 197, 94, 0.15));
 
-    backdrop-filter: blur(111px);
+    backdrop-filter: blur(40px);
     border-radius: var(--radius);
     padding: 1.5rem;
     display: flex;
@@ -210,9 +208,6 @@ body {
     align-items: center;
     gap: 0.45rem;
     padding-top: 100px;
-
-
-
 }
 
 
@@ -367,16 +362,11 @@ button.cta-button {
 .cta-text {
     display: inline-block;
     transform: translateZ(0);
-    text-shadow:
-        0 2px 4px rgba(0, 0, 0, 0.8),
-        /* sombra base */
-        0 0 15px rgba(74, 222, 128, 0.9),
-        /* glow verde brillante */
-        0 0 30px rgba(34, 197, 94, 0.6);
-    /* glow externo */
+    /* Solo sombra negra para legibilidad. El glow verde lo aporta el botón
+       (box-shadow + pulse animation) — duplicarlo en el texto saturaba. */
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.85);
 
     backface-visibility: hidden;
-    /* ligero desfase negativo para mantener coherencia con el pulso */
     will-change: transform, opacity;
 }
 
@@ -480,7 +470,7 @@ button.cta-button {
 .carousel-section h2 {
     font-size: clamp(10px, 1.1vw, 1.3vw);
     font-weight: 600;
-    color: var(--accent-light);
+    color: white;
     opacity: 0.9;
     margin-bottom: 0.5rem;
 
@@ -528,10 +518,10 @@ button.cta-button {
     border-radius: 3px;
     object-fit: cover;
     pointer-events: none;
+    /* Sombra principalmente negra para profundidad, glow verde apenas insinuado */
     box-shadow:
-        0 4px 12px rgba(0, 0, 0, 0.6),
-        0 8px 24px rgba(34, 197, 94, 0.5),
-        0 0 20px rgba(74, 222, 128, 0.3);
+        0 4px 12px rgba(0, 0, 0, 0.55),
+        0 0 14px rgba(34, 197, 94, 0.15);
 }
 
 
@@ -587,10 +577,10 @@ button.cta-button {
 
 .carousel {
     padding: 0.3rem;
-    /* espacio para que la sombra respire */
-    background: rgba(34, 197, 94, 0.25);
+    /* Background tint reducido + sombra atenuada para no competir con el CTA */
+    background: rgba(34, 197, 94, 0.12);
     border-radius: var(--radius);
-    box-shadow: 0 8px 24px rgba(34, 197, 94, 0.8), 0 0 40px rgba(34, 197, 94, 0.4);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35), 0 0 24px rgba(34, 197, 94, 0.18);
 }
 
 .carousel-item img {
@@ -682,13 +672,12 @@ button.cta-button {
 
 
 .logo .icon {
-    width: 0.6rem;
-    height: 0.6rem;
-    object-fit: cover;
-    filter: drop-shadow(0 0 8px rgb(34, 197, 94)) drop-shadow(0 0 15px rgb(74, 222, 128));
-
-    border-radius: 50%;
-    /* border: solid 2px rgba(255, 234, 0, 0.655); */
+    width: 160px;
+    height: 160px;
+    border-radius: 100%;
+    object-fit: contain;
+    /* Glow doble reducido a uno sutil — el logo es identidad, no foco de click */
+    filter: drop-shadow(0 0 10px rgba(34, 197, 94, 0.5));
 }
 
 
@@ -776,4 +765,138 @@ body {
     transform: scale(1.05);
     box-shadow: 0 6px 12px rgba(250, 204, 21, 0.5);
     background-color: var(--wpp-green, #ffc400);
+}
+
+/* =========================================================================
+   Polish pack — entrance stagger, CTA sheen, ambient logo float, bg mesh
+   Appended block. Does not override prior rules; uses safe selectors.
+   ========================================================================= */
+
+/* 1. Entrance stagger: each card child fades+slides up with offset delay.
+   The .subtitle keeps its existing fadeUp; we extend the pattern to logo,
+   highlight, CTA. Card itself gets a subtle scale-in. */
+@keyframes polish-fadeUp {
+    from { opacity: 0; transform: translateY(14px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes polish-scaleIn {
+    from { opacity: 0; transform: translate(-50%, -50%) scale(0.96); }
+    to   { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+}
+
+.screen {
+    animation: polish-scaleIn 0.6s var(--ease, cubic-bezier(0.4, 0, 0.2, 1)) both;
+}
+
+.card .logo {
+    opacity: 0;
+    animation: polish-fadeUp 0.55s var(--ease, cubic-bezier(0.4, 0, 0.2, 1)) 0.15s forwards;
+}
+.card .highlight {
+    opacity: 0;
+    animation: polish-fadeUp 0.55s var(--ease, cubic-bezier(0.4, 0, 0.2, 1)) 0.45s forwards;
+}
+.card .cta-button {
+    opacity: 0;
+    animation:
+        polish-fadeUp 0.55s var(--ease, cubic-bezier(0.4, 0, 0.2, 1)) 0.6s forwards,
+        cta-pulse var(--pulse-duration) var(--pulse-ease) 1.2s infinite both;
+}
+
+/* 2. Logo ambient float — subtle vertical drift after entrance settles.
+   Starts after the fade-up finishes (delay matches entrance + small gap). */
+@keyframes polish-logo-float {
+    0%, 100% { transform: translateY(0); }
+    50%      { transform: translateY(-6px); }
+}
+
+.card .logo .icon {
+    animation: polish-logo-float 4.5s ease-in-out 1s infinite;
+    will-change: transform;
+}
+
+/* 3. CTA sheen sweep — the .cta-button already has `overflow: hidden` and a
+   comment "necesario para sheen / ripple" but the sheen was never wired.
+   Wire it via a ::before pseudo that diagonals across every few seconds. */
+.cta-button::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -75%;
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(
+        100deg,
+        rgba(255, 255, 255, 0) 0%,
+        rgba(255, 255, 255, 0.35) 50%,
+        rgba(255, 255, 255, 0) 100%
+    );
+    transform: skewX(-22deg);
+    pointer-events: none;
+    animation: polish-sheen 3.6s ease-in-out 2s infinite;
+}
+
+@keyframes polish-sheen {
+    0%   { left: -75%; }
+    55%  { left: 130%; }
+    100% { left: 130%; }
+}
+
+/* 4. Ambient background mesh — slow rotating radial blobs on `.screen`.
+   Sits behind the card (z-index 0) and tints the existing gradient. */
+.screen::before {
+    content: "";
+    position: absolute;
+    inset: -20%;
+    /* Mesh ambient reducido ~50%. Aporta profundidad sin saturar. */
+    background:
+        radial-gradient(circle at 20% 30%, rgba(74, 222, 128, 0.09), transparent 40%),
+        radial-gradient(circle at 80% 70%, rgba(34, 197, 94, 0.11), transparent 45%),
+        radial-gradient(circle at 50% 90%, rgba(16, 185, 129, 0.07), transparent 50%);
+    filter: blur(40px);
+    pointer-events: none;
+    z-index: 0;
+    animation: polish-mesh 18s ease-in-out infinite;
+}
+
+.screen > * {
+    position: relative;
+    z-index: 1;
+}
+
+@keyframes polish-mesh {
+    0%, 100% { transform: rotate(0deg) scale(1); }
+    50%      { transform: rotate(8deg)  scale(1.05); }
+}
+
+/* 5. Carousel item zoom on tap/hover — micro feedback for explore moments */
+.carousel-item {
+    transition: transform 0.35s var(--ease, cubic-bezier(0.4, 0, 0.2, 1));
+}
+.carousel-item:hover,
+.carousel-item:active {
+    transform: scale(1.04);
+}
+
+/* 6. Accessibility — kill all the polish for users who opted out.
+   Vestibular disorders + battery savers. Always include this. */
+@media (prefers-reduced-motion: reduce) {
+    .screen,
+    .card .logo,
+    .card .highlight,
+    .card .cta-button,
+    .card .logo .icon,
+    .cta-button::before,
+    .screen::before,
+    .carousel-track,
+    .carousel-item {
+        animation: none !important;
+        transition: none !important;
+    }
+    .card .logo,
+    .card .highlight,
+    .card .cta-button {
+        opacity: 1 !important;
+    }
 }
