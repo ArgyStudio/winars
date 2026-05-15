@@ -4,22 +4,37 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <title>WINARS.com</title>
-    <link rel="icon" type="image/png" href="/favicon.png">
+    <meta name="theme-color" content="#000000" />
+    <meta name="description" content="WINARS — Reclamá tu bono de bienvenida y empezá a jugar. Pagos al instante las 24hs." />
+    <meta name="robots" content="index, follow" />
+
+    <!-- Open Graph / WhatsApp link preview -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="WINARS — Bono de Bienvenida" />
+    <meta property="og:description" content="Reclamá tu bono y empezá a jugar. Pagos las 24hs." />
+    <!-- TODO: replace with absolute URL once landing is deployed -->
+    <meta property="og:image" content="./assets/images/landing/logo/winars-logo.png" />
+
+    <title>WINARS — Bono de Bienvenida</title>
+    <link rel="icon" type="image/png" href="/favicon.png" />
+
+    <!-- Perf: warm up critical third-party origins -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preconnect" href="https://connect.facebook.net" />
+    <link rel="preconnect" href="https://ewhzrh7r71.execute-api.us-east-2.amazonaws.com" />
 
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&display=swap" rel="stylesheet" />
 
-    <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js" defer></script>
-    <script src="https://cdn.jsdelivr.net/npm/@fingerprintjs/fingerprintjs@3/dist/fp.min.js"></script>
-
-
-
     <link rel="stylesheet" href="./styles/styles.css" />
     <link rel="stylesheet" href="./styles/mp.css" />
 
-
     <script>
+        // Safety net: if JS load or pixel breaks, never leave the page invisible.
+        // basic-main.js removes .lbody on 'load' — this timer is the floor.
+        setTimeout(() => document.body && document.body.classList.remove('lbody'), 4000);
+
         const PIXEL_ID = "2371010836730851";
         !(function (f, b, e, v, n, t, s) {
             if (f.fbq) return;
@@ -52,6 +67,14 @@
 </head>
 
 <body class="lbody">
+
+    <noscript>
+        <div style="padding:1rem;text-align:center;background:#111;color:#fff;font-family:sans-serif;">
+            Para reclamar tu bono necesitás JavaScript activado.
+            Si no podés, escribinos directo:
+            <a href="https://wa.me/5491176159174" style="color:#0f0;">WhatsApp WINARS</a>
+        </div>
+    </noscript>
 
     <div id="loading-overlay" class="hidden">
         <img src="./assets/svg/Spin@1x-1.0s-200px-200px.svg" alt="Cargando...">
