@@ -14,8 +14,7 @@ const VISIT_UUID = crypto.randomUUID();
 const WA_NUMBERS = [
     '5491176159174',
     '5491171247092',
-    '5491171461076',
-    '5491154035064',
+    '5491171461076'
 ];
 
 // All four lines belong to the "ld" campaign tag — no per-ref routing,
