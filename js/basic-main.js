@@ -1,15 +1,10 @@
-// ads-events-platform integration — winars
-// Flow: on load, POST browser tracking metadata to /ingest and stash the returned uuid.
-// On CTA click, build wa.me URL with the uuid so Kommo can correlate the lead.
-
 const INGEST_URL = 'https://ewhzrh7r71.execute-api.us-east-2.amazonaws.com/ingest';
 
-// PIXEL_ID is declared as a global in index.html (set via window scope).
-// Fall back to null so missing config fails loud instead of shipping 'undefined'.
 const PIXEL_ID_SAFE = typeof PIXEL_ID === 'string' && PIXEL_ID ? PIXEL_ID : null;
 
-// Generate uuid once per page load. Reused by both /ingest and wa.me.
 const VISIT_UUID = crypto.randomUUID();
+
+let resolvedUuid = VISIT_UUID;
 
 const WA_NUMBERS = [
     '5491176159174',
@@ -17,8 +12,6 @@ const WA_NUMBERS = [
     '5491171461076'
 ];
 
-// All four lines belong to the "ld" campaign tag — no per-ref routing,
-// random rotation across all numbers regardless of e_ref value.
 const WA_LINES_BY_REF = new Map();
 
 function pickWhatsAppLine() {
@@ -63,17 +56,12 @@ async function ingestVisit() {
         return;
     }
 
-    // Meta Pixel sets _fbp (always) and _fbc (only when fbclid is present).
-    // Wait up to 3s for the async pixel to write them.
     await Promise.all([waitForCookie('_fbp'), waitForCookie('_fbc')]);
 
     const cookies = parseCookies();
     const fbp = cookies._fbp || null;
     const fbcFromCookie = cookies._fbc || null;
 
-    // If the URL has a fresh fbclid, reconstruct _fbc server-authoritatively.
-    // This avoids a known Meta issue where stale cached _fbc (with fbclid >90d)
-    // degrades event match quality.
     const fbclid = new URLSearchParams(window.location.search).get('fbclid');
     const fbc = fbclid ? `fb.1.${Date.now()}.${fbclid}` : fbcFromCookie;
 
@@ -83,9 +71,6 @@ async function ingestVisit() {
         fbclid,
         fbc,
         fbp,
-        // Forwarded by the backend to Meta CAPI as event_source_url. Helps Meta
-        // attribute the Lead/Purchase to this exact landing URL (improves EMQ
-        // and is required for AEM iOS attribution per verified domain).
         event_source_url: window.location.href,
         visit_time_ms: Date.now(),
     };
@@ -104,6 +89,9 @@ async function ingestVisit() {
         }
 
         const data = await resp.json().catch(() => null);
+
+        if (data && data.uuid) resolvedUuid = data.uuid;
+
         console.log('[ingest] ok', data);
     } catch (err) {
         console.error('[ingest] error', err);
@@ -114,16 +102,12 @@ async function ingestVisit() {
 
 window.addEventListener('load', () => {
     document.body.classList.remove('lbody');
-    // Fire tracking asynchronously — never block the user.
     void ingestVisit();
 });
 
 let ctaClicked = false;
 
 document.getElementById('Btn').addEventListener('click', (ev) => {
-    // Spam-click guard: a second tap before wa.me opens would fire `Contact`
-    // twice and pollute audience signals. Cheap latch — re-armed on pageshow
-    // if the user comes back via browser history.
     if (ctaClicked) {
         ev.preventDefault();
         return;
@@ -134,13 +118,9 @@ document.getElementById('Btn').addEventListener('click', (ev) => {
     document.getElementById('loading-overlay').classList.remove('hidden');
 
     const lineNumber = pickWhatsAppLine();
-    const msg = WA_MESSAGE(VISIT_UUID);
+    const msg = WA_MESSAGE(resolvedUuid);
     const url = `https://wa.me/${lineNumber}?text=${encodeURIComponent(msg)}`;
 
-    // Standard Meta event "Contact" — fired the moment the user commits to
-    // initiate a conversation. Distinct from the CAPI Lead event (which only
-    // fires once the message actually lands in Kommo). Helps Meta build a
-    // warmer audience model and gives a click-funnel view in Events Manager.
     if (typeof fbq === 'function') {
         fbq('track', 'Contact', {
             content_name: 'whatsapp_click',
@@ -148,9 +128,6 @@ document.getElementById('Btn').addEventListener('click', (ev) => {
         });
     }
 
-    // Click happens whether or not /ingest finished — we still have VISIT_UUID locally.
-    // The Lambda is idempotent on (uuid, client_id), so a late ingest arriving
-    // after the user already messaged does not create a duplicate visit row.
     if (!ingestDone) {
         console.log('[click] proceeding with wa.me before /ingest resolved');
     }
@@ -158,8 +135,6 @@ document.getElementById('Btn').addEventListener('click', (ev) => {
     window.location.href = url;
 });
 
-// If the user comes back to this tab via bfcache (e.g. closes WhatsApp), re-enable
-// the CTA so a returning user can click again without a hard reload.
 window.addEventListener('pageshow', (ev) => {
     if (ev.persisted) {
         ctaClicked = false;
